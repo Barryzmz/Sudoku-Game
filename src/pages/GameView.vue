@@ -3,9 +3,12 @@
     <div class="row align-items-start">
       <div class="col-2 d-flex flex-column gap-2"></div>
       <div class="col-8">
-        <SudokuGrid :cells="cells" @update-cell="updateCell" />
+        <SudokuGrid :cells="cells" :hint-left="hintLeft" @update-cell="updateCell" @request-hint="onRequestHint" />
       </div>
       <div class="col-2 d-flex flex-column gap-2 mt-4">
+        <div class="bg-secondary d-flex align-content-center  p-2">
+          <h5 class="text-light my-0">Hints left：{{ hintLeft }}</h5>
+        </div>
         <button class="btn btn-success" @click="newPuzzle">New Puzzle</button>
       </div>
     </div>
@@ -43,6 +46,7 @@ type Cell = { solve: number; input: number; given: boolean }
 const cells = ref<Cell[][]>([])
 const clues = ref(36) // 題目保留數：越少越難
 const isSolved = ref(false)          // ✅ 是否通關
+const hintLeft = ref(5) // 提示限制次數
 onMounted(() => newPuzzle())
 
 // 新的題目
@@ -51,6 +55,7 @@ function newPuzzle() {
   const mask = makePuzzleMask(clues.value) // true=保留
   cells.value = buildCells(solution, mask)
   isSolved.value = false
+  hintLeft.value = 5
 }
 
 function updateCell({ r, c, val }: { r: number; c: number; val: number }) {
@@ -103,6 +108,11 @@ function makePuzzleMask(clues = 36) {
     mask[Math.floor(i / 9)][i % 9] = keepSet.has(i)
   }
   return mask
+}
+
+// 請求提示時：填入正解並扣一次
+function onRequestHint() {
+  hintLeft.value--
 }
 
 function closeModal() {

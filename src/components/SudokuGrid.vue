@@ -16,6 +16,7 @@
       <div class="numpad-row">
         <button v-for="n in 9" class="btn btn-primary" :key="n" @click="setNumber(n)">{{ n }}</button>
         <button class="btn btn-light text-dark" @click="clearNumber">clear</button>
+        <button class="btn btn-success" @click="hint" :disabled="!canHint">hint</button>
         <button class="btn btn-secondary" @click="selected = null">close</button>
       </div>
     </div>
@@ -26,18 +27,27 @@
 
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 type Cell = { solve: number; input: number; given: boolean }
 
-const props = defineProps<{ cells: Cell[][] }>()
+const props = defineProps<{ cells: Cell[][] ,hintLeft: number}>()
 const emit = defineEmits<{
   (e: 'update-cell', payload: { r: number; c: number; val: number }): void
+  (e: 'request-hint'): void   
 }>()
 
 const selected = ref<{ r: number; c: number } | null>(null)
 const tableRef = ref<HTMLTableElement | null>(null)
 
+const canHint = computed(() => {
+  if (!selected.value) 
+    return false
+  const { r, c } = selected.value
+  if (props.cells[r][c].given) 
+    return false
+  return props.hintLeft > 0
+})
 
 // 點格子 = 選取（題目格不可選）
 function onCellClick(r: number, c: number) {
@@ -62,6 +72,22 @@ function clearNumber() {
   selected.value = null
 }
 
+function hint() {
+  if (!selected.value || props.hintLeft <= 0) 
+    return
+  const { r, c } = selected.value
+  const cell = props.cells[r][c]
+  if (cell.input === cell.solve) 
+    return
+  if (cell.given) 
+    return
+
+  // 直接用正解填入
+  emit('update-cell', { r, c, val: cell.solve })
+  emit('request-hint')
+  selected.value = null
+}
+
 // 鍵盤輸入：1-9 填入；0/Backspace/Delete 清除；Esc 取消
 function onKeydown(e: KeyboardEvent) {
   if (!selected.value) return
@@ -71,6 +97,8 @@ function onKeydown(e: KeyboardEvent) {
     clearNumber()
   } else if (e.key === 'Escape') {
     selected.value = null
+  } else if (e.key.toLowerCase() === 'h') {
+    hint()
   }
 }
 
@@ -145,7 +173,7 @@ function tdClass(r: number, c: number) {
 
 .numpad-row {
   display: grid;
-  grid-template-columns: repeat(11, 1fr);
+  grid-template-columns: repeat(12, 1fr);
   /* 11 等分 */
   gap: 5px;
   /* 可選間距 */
