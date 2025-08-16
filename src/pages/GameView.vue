@@ -18,9 +18,11 @@ import { generateFullSolution } from '../lib/generator'
 
 // 9×9 完整解（示例）
 const solutionBoard = ref(generateFullSolution()) 
+const gridKey = ref(0)
 
 function regenerate() {
   solutionBoard.value = generateFullSolution()
+  gridKey.value++ 
 }
 </script>
 <style scoped>
