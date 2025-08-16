@@ -1,10 +1,11 @@
 <template>
   <div class="container">
     <div class="row align-items-start">
-      <div class="col">
+      <div class="col-2 d-flex flex-column gap-2"></div>
+      <div class="col-8">
         <SudokuGrid :cells="cells" @update-cell="updateCell" />
       </div>
-      <div class="col-auto d-flex flex-column gap-2">
+      <div class="col-2 d-flex flex-column gap-2 mt-4">
         <button class="btn btn-success" @click="newPuzzle">New Puzzle</button>
       </div>
     </div>

@@ -13,10 +13,13 @@
 
     <!-- 簡易數字選單 -->
     <div v-if="selected" class="numpad text-dark" style="height:60px;">
-      <button v-for="n in 9" class="text-dark" :key="n" @click="setNumber(n)">{{ n }}</button>
-      <button class="text-dark" @click="clearNumber">清除</button>
-      <button class="text-dark" @click="selected = null">關閉</button>
+      <div class="numpad-row">
+        <button v-for="n in 9" class="btn btn-primary" :key="n" @click="setNumber(n)">{{ n }}</button>
+        <button class="btn btn-light text-dark" @click="clearNumber">clear</button>
+        <button class="btn btn-secondary" @click="selected = null">close</button>
+      </div>
     </div>
+
     <div v-else class="numpad" style="height:60px;"></div>
   </div>
 </template>
@@ -140,6 +143,15 @@ function tdClass(r: number, c: number) {
   justify-content: center;
 }
 
+.numpad-row {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  /* 11 等分 */
+  gap: 5px;
+  /* 可選間距 */
+  width: 100%;
+}
+
 /* 外框 & 3×3 粗線維持原來設定 */
 .grid tr:first-child .cell {
   border-top: 4px solid #000;
@@ -202,7 +214,7 @@ function tdClass(r: number, c: number) {
   justify-content: center;
 }
 
-.numpad button {
+/* .numpad button {
   padding: 6px 10px;
   border: 1px solid #cbd5e1;
   background: #fff;
@@ -212,5 +224,5 @@ function tdClass(r: number, c: number) {
 
 .numpad button:hover {
   background: #f3f4f6;
-}
+} */
 </style>
