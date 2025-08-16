@@ -12,13 +12,15 @@
     </table>
 
     <!-- 簡易數字選單 -->
-    <div v-if="selected" class="numpad">
-      <button v-for="n in 9" :key="n" @click="setNumber(n)" style="color: black;">{{ n }}</button>
-      <button @click="clearNumber" style="color: black;">清除</button>
-      <button @click="selected = null" style="color: black;">關閉</button>
+    <div v-if="selected" class="numpad text-dark" style="height:60px;">
+      <button v-for="n in 9" class="text-dark" :key="n" @click="setNumber(n)">{{ n }}</button>
+      <button class="text-dark" @click="clearNumber">清除</button>
+      <button class="text-dark" @click="selected = null">關閉</button>
     </div>
+    <div v-else class="numpad" style="height:60px;"></div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -88,31 +90,57 @@ function tdClass(r: number, c: number) {
 
 <style scoped>
 .wrap {
-  padding: 24px;
+  --pad: 20px;
+  --reserve-y: clamp(80px, 16vh, 160px);
+  /* 底部要留給數字面板的高度，自己調整 */
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: var(--pad);
+
+  /* ✅ 用這個來控制棋盤大小，而不是去改 .grid 的 height */
+  --board-size: min(calc(100dvh - 2*var(--pad) - var(--reserve-y)),
+      calc(100vw - 2*var(--pad)));
 }
 
-/* 表格 */
+/* 表格改成固定布局，並指定正方形大小 */
 .grid {
+  /* table-layout: fixed; */
   border-collapse: collapse;
   background: #fff;
   outline: none;
+
+  width: var(--board-size);
+  height: var(--board-size);
+  /* ✅ 有高度，row 的百分比高度才生效 */
 }
 
+/* 每格大小隨棋盤縮放：1/9 正方形；字體也跟著縮放 */
 .cell {
-  width: 48px;
-  height: 48px;
+  width: calc(var(--board-size) / 9);
+  height: calc(var(--board-size) / 9);
+  font-size: calc(var(--board-size) / 18);
+
   border: 1px solid #cbd5e1;
   text-align: center;
   vertical-align: middle;
-  font-size: 18px;
   font-weight: 600;
   color: #000;
   cursor: pointer;
 }
 
+.numpad-slot {
+  width: var(--board-size);
+  height: var(--reserve-y);
+  /* 跟上面的變數對齊 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 外框 & 3×3 粗線維持原來設定 */
 .grid tr:first-child .cell {
   border-top: 4px solid #000;
 }
