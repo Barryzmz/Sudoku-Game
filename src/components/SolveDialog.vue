@@ -17,8 +17,10 @@
                             </table>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" @click="close">close</button>
+                    <div class="modal-footer row g-2 w-100 justify-content-center">
+                        <div class="col-12 col-sm-6">
+                            <button class="btn btn-secondary w-100" @click="close">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>
