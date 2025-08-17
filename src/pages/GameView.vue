@@ -9,10 +9,8 @@
         <div class="bg-light d-flex align-content-center p-2">
           <h5 class="text-dark my-0">Hints left：{{ hintLeft }}</h5>
         </div>
-
         <button class="btn btn-outline-primary" @click="newPuzzle">New Puzzle</button>
 
-        <!-- 底部區塊：被 mt-auto 推到最下面 -->
         <div class="mt-auto pt-3 border-top">
           <button class="btn btn-primary w-100" @click="showSolveDialog = true">
             Show Solution
@@ -20,35 +18,16 @@
         </div>
       </div>
     </div>
-
-    <div v-if="isSolved">
-      <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="winTitle">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 id="winTitle" class="modal-title">成功完成！</h5>
-              <button type="button" class="btn-close" aria-label="Close" @click="closeModal"></button>
-            </div>
-            <div class="modal-body">
-              恭喜！過關！
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" @click="closeModal">關閉</button>
-              <button type="button" class="btn btn-primary" @click="newPuzzle">下一局</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-backdrop fade show" @click="closeModal"></div>
-    </div>
   </div>
   <SolveDialog v-model:open="showSolveDialog" :cells="cells" />
+  <ShowSuccessDialog v-model:open="isSolved" @new-puzzle="newPuzzle"/>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import SudokuGrid from '../components/SudokuGrid.vue'
 import SolveDialog from '../components/SolveDialog.vue'
+import ShowSuccessDialog from '../components/ShowSuccessDialog.vue'
 import { generateFullSolution } from '../lib/generator'
 
 type Cell = { solve: number; input: number; given: boolean }
@@ -107,7 +86,6 @@ function checkSolved(board: Cell[][]): boolean {
 function makePuzzleMask(clues = 36) {
   const total = 81; // 總格數 81
   //保留數 "keep" 介於 20 ~ 81（17 是理論下限，太少很難有唯一解）
-  // const keep = 80
   const keep = Math.max(20, Math.min(total, Math.floor(clues)))
   const idxs = Array.from({ length: total }, (_, i) => i)
   for (let i = total - 1; i > 0; i--) {
@@ -126,10 +104,6 @@ function makePuzzleMask(clues = 36) {
 // 請求提示時：填入正解並扣一次
 function onRequestHint() {
   hintLeft.value--
-}
-
-function closeModal() {
-  isSolved.value = false
 }
 
 </script>
