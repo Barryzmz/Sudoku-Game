@@ -3,7 +3,7 @@ import GameView from './pages/GameView.vue'
 </script>
 
 <template>
-  <div class="min-vh-100 bg-black">
+  <div class="min-vh-100 bg-secondary">
     <GameView />
   </div>
 </template>

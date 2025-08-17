@@ -12,12 +12,12 @@
     </table>
 
     <!-- 簡易數字選單 -->
-    <div v-if="selected" class="numpad text-dark" style="height:60px;">
+    <div v-if="selected" class="numpad text-dark bg-light p-2" style="height:60px;">
       <div class="numpad-row">
         <button v-for="n in 9" class="btn btn-primary" :key="n" @click="setNumber(n)">{{ n }}</button>
-        <button class="btn btn-light text-dark" @click="clearNumber">clear</button>
+        <button class="btn btn-info" @click="clearNumber">clear</button>
         <button class="btn btn-success" @click="hint" :disabled="!canHint">hint</button>
-        <button class="btn btn-secondary" @click="selected = null">close</button>
+        <button class="btn btn-outline-dark" @click="selected = null">close</button>
       </div>
     </div>
 
@@ -154,7 +154,7 @@ function tdClass(r: number, c: number) {
   height: calc(var(--board-size) / 9);
   font-size: calc(var(--board-size) / 18);
 
-  border: 1px solid #cbd5e1;
+  border: 1px solid #979faa;
   text-align: center;
   vertical-align: middle;
   font-weight: 600;
@@ -198,11 +198,11 @@ function tdClass(r: number, c: number) {
 }
 
 .grid tr:nth-child(3n) .cell {
-  border-bottom: 2px solid #000;
+  border-bottom: 4px solid #000;
 }
 
 .grid .cell:nth-child(3n) {
-  border-right: 2px solid #000;
+  border-right: 4px solid #000;
 }
 
 /* 題目格：黑字更醒目且不可點 */
@@ -241,16 +241,4 @@ function tdClass(r: number, c: number) {
   flex-wrap: wrap;
   justify-content: center;
 }
-
-/* .numpad button {
-  padding: 6px 10px;
-  border: 1px solid #cbd5e1;
-  background: #fff;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.numpad button:hover {
-  background: #f3f4f6;
-} */
 </style>
