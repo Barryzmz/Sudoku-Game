@@ -31,14 +31,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import type { PropType } from 'vue'
-import { Modal } from 'bootstrap' // 若型別報錯，見下方備註
-
-// 你的 cell 結構（依需求調整）
-type Cell = {
-    solve: string | number
-    input?: string | number | null
-    given: boolean
-}
+import type { Cell } from '../types/baseType'
+import { Modal } from 'bootstrap'
 
 const props = defineProps({
     open: { type: Boolean, default: false },                // v-model:open

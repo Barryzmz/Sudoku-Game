@@ -28,8 +28,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-
-type Cell = { solve: number; input: number; given: boolean }
+import type { Cell } from '../types/baseType'
 
 const props = defineProps<{ cells: Cell[][] ,hintLeft: number}>()
 const emit = defineEmits<{
@@ -101,8 +100,6 @@ function onKeydown(e: KeyboardEvent) {
     hint()
   }
 }
-
-/* 用 if/else 易讀版：決定要套的 class */
 
 /* 算出某一格 <td> 要套哪些 CSS 類別 */
 function tdClass(r: number, c: number) {
