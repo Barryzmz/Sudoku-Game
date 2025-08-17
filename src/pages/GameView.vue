@@ -7,13 +7,20 @@
       </div>
       <div class="col-2 d-flex flex-column gap-2 bg-light p-3 min-vh-100">
         <div class="bg-light d-flex align-content-center p-2">
-          <h5 class="text-dark my-0">Hints left：{{ hintLeft }}</h5>
+          <h5 class="text-dark my-0">Hints left : {{ hintLeft }}</h5>
         </div>
         <button class="btn btn-outline-primary" @click="newPuzzle">New Puzzle</button>
-        <button class="btn btn-outline-secondary" @click="showHotKeyDialog = true">HotKey Settings</button>
+        <select v-model="selectedDifficulty" class="form-select form-select-sm w-auto" @change="newPuzzle">
+          <option v-for="d in DIFFICULTIES" :key="d" :value="d">
+            {{ DIFFICULTY_LABELS[d] }}
+          </option>
+        </select>
 
         <div class="mt-auto pt-3 border-top">
-          <button class="btn btn-primary w-100" @click="showSolveDialog = true">
+          <button class="btn btn-outline-secondary w-100  mb-2" @click="showHotKeyDialog = true">
+            HotKey Settings
+          </button>
+          <button class="btn btn-primary w-100 mb-2" @click="showSolveDialog = true">
             Show Solution
           </button>
         </div>
@@ -31,23 +38,24 @@ import SudokuGrid from '../components/SudokuGrid.vue'
 import SolveDialog from '../components/SolveDialog.vue'
 import ShowSuccessDialog from '../components/ShowSuccessDialog.vue'
 import ShowHotKeyDialog from '../components/ShowHotKeyDialog.vue'
-import { generateFullSolution } from '../lib/generator'
+import { generateFullSolution, generateUniquePuzzle, DIFFICULTIES, DIFFICULTY_LABELS, type Difficulty } from '../lib/generator'
 
 type Cell = { solve: number; input: number; given: boolean }
 
 const cells = ref<Cell[][]>([])
-const clues = ref(36) // 題目保留數：越少越難
-const isSolved = ref(false)          // ✅ 是否通關
-const hintLeft = ref(5) // 提示限制次數
+const isSolved = ref(false)
+const hintLeft = ref(5)
 const showSolveDialog = ref(false)
 const showHotKeyDialog = ref(false)
-
+const selectedDifficulty = ref<Difficulty>('medium')
 onMounted(() => newPuzzle())
 
 // 新的題目
 function newPuzzle() {
   const solution = generateFullSolution()
-  const mask = makePuzzleMask(clues.value) // true=保留
+  const { mask } = generateUniquePuzzle(solution, selectedDifficulty.value)
+  
+  // const mask = makePuzzleMask(clues.value) // true=保留
   cells.value = buildCells(solution, mask)
   isSolved.value = false
   hintLeft.value = 5
@@ -84,25 +92,6 @@ function checkSolved(board: Cell[][]): boolean {
     }
   }
   return true
-}
-
-/* 隨機挖空 */
-function makePuzzleMask(clues = 36) {
-  const total = 81; // 總格數 81
-  //保留數 "keep" 介於 20 ~ 81（17 是理論下限，太少很難有唯一解）
-  const keep = Math.max(20, Math.min(total, Math.floor(clues)))
-  const idxs = Array.from({ length: total }, (_, i) => i)
-  for (let i = total - 1; i > 0; i--) {
-    const j = (Math.random() * (i + 1)) | 0
-      ;[idxs[i], idxs[j]] = [idxs[j], idxs[i]]
-  }
-  const keepSet = new Set(idxs.slice(0, keep))
-  const mask = Array.from({ length: 9 }, () => Array(9).fill(false))
-
-  for (let i = 0; i < total; i++) {
-    mask[Math.floor(i / 9)][i % 9] = keepSet.has(i)
-  }
-  return mask
 }
 
 // 請求提示時：填入正解並扣一次
