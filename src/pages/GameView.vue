@@ -10,6 +10,7 @@
           <h5 class="text-dark my-0">Hints left：{{ hintLeft }}</h5>
         </div>
         <button class="btn btn-outline-primary" @click="newPuzzle">New Puzzle</button>
+        <button class="btn btn-outline-secondary" @click="showHotKeyDialog = true">HotKey Settings</button>
 
         <div class="mt-auto pt-3 border-top">
           <button class="btn btn-primary w-100" @click="showSolveDialog = true">
@@ -20,7 +21,8 @@
     </div>
   </div>
   <SolveDialog v-model:open="showSolveDialog" :cells="cells" />
-  <ShowSuccessDialog v-model:open="isSolved" @new-puzzle="newPuzzle"/>
+  <ShowSuccessDialog v-model:open="isSolved" @new-puzzle="newPuzzle" />
+  <ShowHotKeyDialog v-model:open="showHotKeyDialog" />
 </template>
 
 <script setup lang="ts">
@@ -28,6 +30,7 @@ import { ref, onMounted } from 'vue'
 import SudokuGrid from '../components/SudokuGrid.vue'
 import SolveDialog from '../components/SolveDialog.vue'
 import ShowSuccessDialog from '../components/ShowSuccessDialog.vue'
+import ShowHotKeyDialog from '../components/ShowHotKeyDiaglog.vue'
 import { generateFullSolution } from '../lib/generator'
 
 type Cell = { solve: number; input: number; given: boolean }
@@ -37,6 +40,7 @@ const clues = ref(36) // 題目保留數：越少越難
 const isSolved = ref(false)          // ✅ 是否通關
 const hintLeft = ref(5) // 提示限制次數
 const showSolveDialog = ref(false)
+const showHotKeyDialog = ref(false)
 
 onMounted(() => newPuzzle())
 
