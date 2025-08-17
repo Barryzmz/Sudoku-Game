@@ -30,7 +30,7 @@ import { ref, onMounted } from 'vue'
 import SudokuGrid from '../components/SudokuGrid.vue'
 import SolveDialog from '../components/SolveDialog.vue'
 import ShowSuccessDialog from '../components/ShowSuccessDialog.vue'
-import ShowHotKeyDialog from '../components/ShowHotKeyDiaglog.vue'
+import ShowHotKeyDialog from '../components/ShowHotKeyDialog.vue'
 import { generateFullSolution } from '../lib/generator'
 
 type Cell = { solve: number; input: number; given: boolean }
